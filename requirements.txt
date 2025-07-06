@@ -1,0 +1,12 @@
+Django>=5.0,<6.0
+djangorestframework
+channels
+channels-redis
+celery
+amqp
+psycopg2-binary
+django-cors-headers
+flower
+python-decouple
+gdal==3.6.2
+daphne

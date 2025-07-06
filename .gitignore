@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdm.toml
+*.egg-info/
+*.egg
+.eggs/
+
+# Django
+*.sqlite3
+db.sqlite3
+.env
+.env.*
+*.log
+local_settings.py
+media/
+staticfiles/
+celerybeat-schedule
+*.pot
+*.pyc
+
+# VSCode & JetBrains IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
+*.pid.lock
+*.sock
+docker-compose.override.yml
+
+# Build
+build/
+dist/
+*.tar.gz
+*.whl
+
+# Node (jika ada frontend)
+node_modules/
+*.lock
+
+# Supervisor logs (jika disimpan)
+supervisord.log
+supervisord.pid
+
+# PostgreSQL
+postgres_data/
+pgadmin_data/
+
+# Coverage / testing
+.coverage
+htmlcov/
+coverage.xml
+pytest_cache/
+.cache/
