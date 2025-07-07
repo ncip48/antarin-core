@@ -72,6 +72,11 @@ services:
         condition: service_started
     env_file:
       - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.local.rule=Host(`localhost`)"
+      - "traefik.http.routers.local.entrypoints=websecure"
+      - "traefik.http.services.local.loadbalancer.server.port=8000"
 
   celery:
     build:
@@ -103,6 +108,24 @@ services:
         condition: service_healthy
     restart: always
 
+  traefik:
+    image: traefik:v2.11
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"  # Traefik Dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./certs:/certs:ro
+      - ./traefik/tls.yml:/etc/traefik/dynamic/tls.yml:ro
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.file.directory=/etc/traefik/dynamic"
+      - "--providers.file.watch=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls=true"
 
 volumes:
   postgres_data:
