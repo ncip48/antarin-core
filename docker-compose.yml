@@ -63,7 +63,6 @@ services:
     working_dir: /code
     ports:
       - "8000:8000"
-      - "8001:8001"  # daphne
     depends_on:
       postgres:
         condition: service_healthy

@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     
+    'django_celery_results',
+    
     'corsheaders',
     
     'channels',
@@ -167,3 +169,5 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = [
     "core.auth_backends.EmailOrUsernameModelBackend",
 ]
+
+CELERY_RESULT_BACKEND = "django-db"

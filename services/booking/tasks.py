@@ -66,7 +66,7 @@ def update_booking_status_task(booking_id, new_status, driver_id):
     
 @shared_task
 def send_location_update(user_id, lat, lng):
-    _send_ws_to_user(f"user_{user_id}", {
+    _send_ws_to_user(user_id, {
         "lat": lat,
         "lng": lng
     })
