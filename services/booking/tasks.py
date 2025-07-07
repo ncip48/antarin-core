@@ -1,6 +1,6 @@
 from celery import shared_task
 from django.db import transaction
-from booking.models import BookingRequest
+from booking.models import Trip
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
@@ -8,7 +8,7 @@ from asgiref.sync import async_to_sync
 def accept_booking_task(booking_id, driver_id):
     try:
         with transaction.atomic():
-            booking = BookingRequest.objects.select_for_update().get(id=booking_id)
+            booking = Trip.objects.select_for_update().get(id=booking_id)
 
             if booking.status != "pending":
                 _send_ws_to_driver(driver_id, {
@@ -32,7 +32,7 @@ def accept_booking_task(booking_id, driver_id):
                 "driver_id": driver_id,
                 "booking_id": booking.id
             })
-    except BookingRequest.DoesNotExist:
+    except Trip.DoesNotExist:
         _send_ws_to_driver(driver_id, {
             "status": "error",
             "message": "Booking tidak ditemukan"
@@ -43,7 +43,7 @@ def accept_booking_task(booking_id, driver_id):
 def update_booking_status_task(booking_id, new_status, driver_id):
     try:
         with transaction.atomic():
-            booking = BookingRequest.objects.select_for_update().get(id=booking_id)
+            booking = Trip.objects.select_for_update().get(id=booking_id)
 
             if booking.driver_id != driver_id:
                 return
@@ -61,8 +61,15 @@ def update_booking_status_task(booking_id, new_status, driver_id):
                 "status": booking.status,
                 "booking_id": booking.id
             })
-    except BookingRequest.DoesNotExist:
+    except Trip.DoesNotExist:
         pass
+    
+@shared_task
+def send_location_update(user_id, lat, lng):
+    _send_ws_to_user(f"user_{user_id}", {
+        "lat": lat,
+        "lng": lng
+    })
 
 
 def _send_ws_to_driver(driver_id, payload):

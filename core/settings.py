@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     
+    'corsheaders',
+    
     'channels',
     
     'booking',
@@ -149,3 +151,19 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+] + MIDDLEWARE
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+AUTHENTICATION_BACKENDS = [
+    "core.auth_backends.EmailOrUsernameModelBackend",
+]

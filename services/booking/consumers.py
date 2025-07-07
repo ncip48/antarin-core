@@ -7,10 +7,12 @@ class DriverConsumer(AsyncWebsocketConsumer):
         self.group_name = f"driver_{self.driver_id}"
 
         await self.channel_layer.group_add(self.group_name, self.channel_name)
+        await self.channel_layer.group_add("drivers_online", self.channel_name)
         await self.accept()
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
+        await self.channel_layer.group_add("drivers_online", self.channel_name)
 
     async def receive(self, text_data):
         from booking.tasks import accept_booking_task, update_booking_status_task
@@ -36,6 +38,12 @@ class DriverConsumer(AsyncWebsocketConsumer):
 
     async def driver_message(self, event):
         await self.send(text_data=json.dumps(event["message"]))
+        
+    async def new_order(self, event):
+        await self.send(text_data=json.dumps({
+            "action": "new_order",
+            "data": event["message"]
+        }))
 
 
 class CustomerConsumer(AsyncWebsocketConsumer):
@@ -50,11 +58,14 @@ class CustomerConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     async def receive(self, text_data):
+        from services.booking.tasks import send_location_update
         data = json.loads(text_data)
         action = data.get("action")
 
         if action == "ping":
             await self.send(text_data=json.dumps({"message": "pong pong pong"}))
+        elif action == "update_location":
+            send_location_update.delay(self.user_id, data["lat"], data["lng"])
 
     async def user_message(self, event):
         message = event["message"]
