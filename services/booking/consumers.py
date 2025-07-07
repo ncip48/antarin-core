@@ -58,7 +58,7 @@ class CustomerConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     async def receive(self, text_data):
-        from services.booking.tasks import send_location_update
+        from booking.tasks import send_location_update
         data = json.loads(text_data)
         action = data.get("action")
 

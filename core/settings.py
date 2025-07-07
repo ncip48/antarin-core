@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'channels',
     
     'booking',
+    
+    'chat',
 ]
 
 MIDDLEWARE = [
