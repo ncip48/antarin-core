@@ -8,6 +8,10 @@ User = get_user_model()
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        if not self.scope["user"].is_authenticated:
+            await self.close()
+            return
+        
         self.booking_id = self.scope["url_route"]["kwargs"]["booking_id"]
         self.room_group_name = f"chat_{self.booking_id}"
 

@@ -7,3 +7,6 @@ class Driver(models.Model):
     location = geomodels.PointField(geography=True, null=True, blank=True)
     last_active = models.DateTimeField(auto_now=True)
     
+    def __str__(self):
+        return f"Driver: ({self.user.username}) {self.user.first_name} {self.user.last_name}"
+    

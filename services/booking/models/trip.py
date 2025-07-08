@@ -12,6 +12,9 @@ class Trip(models.Model):
     customer = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     pickup_point = geomodels.PointField(geography=True)
     destination_point = geomodels.PointField(geography=True, null=True, blank=True)
-    driver = models.ForeignKey("Driver", null=True, blank=True, on_delete=models.SET_NULL)
+    driver = models.ForeignKey("driver.Driver", null=True, blank=True, on_delete=models.SET_NULL)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Trip #{self.id} - {self.customer} ({self.status})"

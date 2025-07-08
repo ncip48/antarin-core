@@ -1,16 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models.driver import Driver
 from .models.trip import Trip
-
-@admin.register(Driver)
-class DriverAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "is_available", "location", "last_active")
-    list_filter = ("is_available",)
-    search_fields = ("user__username", "user__email")
-    readonly_fields = ("last_active",)
-    ordering = ("-last_active",)
 
 @admin.register(Trip)
 class TripAdmin(admin.ModelAdmin):

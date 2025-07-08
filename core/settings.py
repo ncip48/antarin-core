@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+from datetime import timedelta
 import os
 from pathlib import Path
 from decouple import config
@@ -42,12 +43,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
+    'rest_framework',
     
     'django_celery_results',
     
     'corsheaders',
     
     'channels',
+    
+    'driver',
     
     'booking',
     
@@ -175,3 +179,11 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 CELERY_RESULT_BACKEND = "django-db"
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),      # ⏱ 1 day access token
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),    # 🔁 30 days refresh token
+    'ROTATE_REFRESH_TOKENS': False,                  # Set True if you want new refresh token on every refresh
+    'BLACKLIST_AFTER_ROTATION': True,                # Only needed if you use token blacklisting
+    'AUTH_HEADER_TYPES': ('Bearer',),                # Default: 'Bearer'
+}

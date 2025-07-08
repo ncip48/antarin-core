@@ -9,4 +9,4 @@ class ChatMessageViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         booking_id = self.request.query_params.get("booking_id")
-        return ChatMessage.objects.filter(booking_id=booking_id)
+        return ChatMessage.objects.filter(trip_id=booking_id)
