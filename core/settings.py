@@ -189,5 +189,3 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = 'authn.User'
-
-os.environ['GDAL_LIBRARY_PATH'] = '/opt/homebrew/lib/libgdal.37.dylib'
