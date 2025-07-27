@@ -191,3 +191,10 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = 'authn.User'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  # Additional static files
+]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
