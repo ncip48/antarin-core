@@ -187,3 +187,5 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,                # Only needed if you use token blacklisting
     'AUTH_HEADER_TYPES': ('Bearer',),                # Default: 'Bearer'
 }
+
+AUTH_USER_MODEL = 'authn.User'
