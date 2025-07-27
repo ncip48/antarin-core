@@ -12,3 +12,7 @@ gdal==3.6.2
 daphne
 djangorestframework-simplejwt
 django-celery-results
+osmnx 
+networkx 
+geopandas
+scikit-learn
