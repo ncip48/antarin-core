@@ -16,3 +16,4 @@ osmnx
 networkx 
 geopandas
 scikit-learn
+Pillow

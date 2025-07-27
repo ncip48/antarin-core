@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     
     'corsheaders',
     
+    'authn',
+    
     'channels',
     
     'driver',

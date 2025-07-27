@@ -1,5 +1,6 @@
 from django.contrib.gis.db import models as geomodels
 from django.db import models
+from authn.models.user import User
 
 class Trip(models.Model):
     STATUS_CHOICES = [
@@ -9,7 +10,7 @@ class Trip(models.Model):
         ("completed", "Completed"),
         ("cancelled", "Cancelled"),
     ]
-    customer = models.ForeignKey("auth.User", on_delete=models.CASCADE)
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
     pickup_point = geomodels.PointField(geography=True)
     destination_point = geomodels.PointField(geography=True, null=True, blank=True)
     driver = models.ForeignKey("driver.Driver", null=True, blank=True, on_delete=models.SET_NULL)

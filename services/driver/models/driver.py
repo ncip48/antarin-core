@@ -5,9 +5,10 @@ import logging
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from core.models import get_subid_model
+from authn.models import User
 
 if TYPE_CHECKING:
-    from authn.models.user import User
+    from authn.models import User
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +32,7 @@ class DriverManager(_DriverManagerBase):
 
 class Driver(get_subid_model()):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    nik = models.CharField(max_length=32, unique=True, null=True, blank=True)
+    nik = models.CharField(max_length=32, unique=True)
     location = geomodels.PointField(geography=True, null=True, blank=True)
     last_active = models.DateTimeField(auto_now=True)
     photo = models.ImageField(upload_to='driver', null=True, blank=True)
