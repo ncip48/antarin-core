@@ -32,14 +32,13 @@ class DriverManager(_DriverManagerBase):
 
 class Driver(get_subid_model()):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    nik = models.CharField(max_length=32, unique=True)
     location = geomodels.PointField(geography=True, null=True, blank=True)
     last_active = models.DateTimeField(auto_now=True)
-    photo = models.ImageField(upload_to='driver', null=True, blank=True)
-    ktp = models.ImageField(upload_to='document', null=True, blank=True)
-    is_available = models.BooleanField(default=True)
+    phone_number = models.CharField(max_length=15)
+    address = models.TextField()
     is_verified = models.BooleanField(default=False)
-    registered_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     objects = DriverManager()
     

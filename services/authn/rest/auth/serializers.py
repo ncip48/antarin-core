@@ -20,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
         from django.contrib.auth import get_user_model
         model = get_user_model() # Use get_user_model() for custom User models
         fields = (
-            "id",
+            "subid",
             "username",
             "first_name",
             "last_name",
@@ -31,7 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
             "last_login",
         )
         read_only_fields = (
-            "id",
+            "subid",
             "is_staff",
             "is_active",
             "date_joined",

@@ -1,6 +1,10 @@
+from django.utils import timezone
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
+
+from chat.models.chat import Chat
+
 from .models import ChatMessage
 from django.contrib.auth import get_user_model
 
@@ -12,10 +16,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.close()
             return
         
-        self.booking_id = self.scope["url_route"]["kwargs"]["booking_id"]
-        self.room_group_name = f"chat_{self.booking_id}"
+        self.subid = self.scope["url_route"]["kwargs"]["subid"]
+        self.room_group_name = f"chat_{self.subid}"
         
-        await self.mark_messages_as_read(self.scope["user"].id, self.booking_id)
+        # await self.mark_messages_as_read(self.scope["user"].id, self.subid)
 
         await self.channel_layer.group_add(
             self.room_group_name,
@@ -33,6 +37,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         message = data["message"]
         sender_id = self.scope["user"].id
+        user = await self.get_user(sender_id)
         
         # Handle typing indicator
         # if data.get("type") == "typing":
@@ -52,14 +57,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return  # Ignore empty messages
 
         # Save message
-        await self.save_message(sender_id, self.booking_id, message)
+        await self.save_message(sender_id, self.subid, message)
 
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 "type": "chat_message",
                 "message": message,
-                "sender_id": sender_id,
+                "sender": {
+                    "subid": user.subid,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "email": user.email,
+                },
+                "created_at": timezone.now().isoformat()
             }
         )
 
@@ -75,15 +86,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 
     @database_sync_to_async
-    def save_message(self, sender_id, booking_id, message):
+    def save_message(self, sender_id, subid, message):
+        chat = Chat.objects.get(subid=subid)
         return ChatMessage.objects.create(
             sender_id=sender_id,
-            trip_id=booking_id,
+            chat=chat,
             message=message
         )
         
+    # @database_sync_to_async
+    # def mark_messages_as_read(self, user_id, subid):
+    #     ChatMessage.objects.filter(
+    #         subid=subid, is_read=False
+    #     ).exclude(sender_id=user_id).update(is_read=True)
+
     @database_sync_to_async
-    def mark_messages_as_read(self, user_id, booking_id):
-        ChatMessage.objects.filter(
-            trip_id=booking_id, is_read=False
-        ).exclude(sender_id=user_id).update(is_read=True)
+    def get_user(self, sender_id):
+        return User.objects.filter(id=sender_id).first()

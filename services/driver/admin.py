@@ -7,14 +7,15 @@ class DriverAdmin(admin.ModelAdmin):
     list_display = (
         "subid",
         "user",
-        "nik",
-        "is_available",
+        "phone_number",
+        "address",
         "is_verified",
         "location",
         "last_active",
-        "registered_at",
+        "created_at",
+        "updated_at",
     )
-    list_filter = ("is_available", "is_verified")
-    search_fields = ("user__username", "user__email", "nik")
-    readonly_fields = ("last_active", "registered_at")
+    list_filter = ("is_verified",)
+    search_fields = ("user__username", "user__email", "phone_number")
+    readonly_fields = ("last_active", "created_at", "updated_at")
     ordering = ("-last_active",)

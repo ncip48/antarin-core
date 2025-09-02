@@ -30,8 +30,12 @@ SECRET_KEY = 'django-insecure-je98(!xh-$2^(lxdg5t(!=p5#1!4v780bm$&w4nppjl6dn433t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
-CSRF_TRUSTED_ORIGINS = ["https://localhost"]
+ALLOWED_HOSTS = ['localhost', 'ec84982d1b87.ngrok-free.app']
+# CSRF_TRUSTED_ORIGINS = ["https://localhost", "http://localhost:3008"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3008",
+    "http://127.0.0.1:3008",
+]
 
 # Application definition
 
@@ -61,6 +65,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -164,11 +169,22 @@ CHANNEL_LAYERS = {
     },
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 
-MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-] + MIDDLEWARE
+CORS_ALLOW_ALL_ORIGINS = False
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3008",
+    "http://127.0.0.1:3008",
+    "https://ec84982d1b87.ngrok-free.app",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+# MIDDLEWARE = [
+#     'corsheaders.middleware.CorsMiddleware',
+#     'django.middleware.common.CommonMiddleware',
+# ] + MIDDLEWARE
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -183,8 +199,8 @@ AUTHENTICATION_BACKENDS = [
 CELERY_RESULT_BACKEND = "django-db"
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),      # ⏱ 1 day access token
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),    # 🔁 30 days refresh token
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=69),      # ⏱ 1 day access token
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=69),    # 🔁 30 days refresh token
     'ROTATE_REFRESH_TOKENS': False,                  # Set True if you want new refresh token on every refresh
     'BLACKLIST_AFTER_ROTATION': True,                # Only needed if you use token blacklisting
     'AUTH_HEADER_TYPES': ('Bearer',),                # Default: 'Bearer'
@@ -192,9 +208,9 @@ SIMPLE_JWT = {
 
 AUTH_USER_MODEL = 'authn.User'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),  # Additional static files
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static'),  # Additional static files
+# ]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

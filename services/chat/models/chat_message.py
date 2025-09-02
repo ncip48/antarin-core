@@ -1,9 +1,13 @@
 from django.db import models
 from django.conf import settings
-from booking.models.trip import Trip
+from core.models import get_subid_model
+from chat.models.chat import Chat
 
-class ChatMessage(models.Model):
-    trip = models.ForeignKey(Trip, on_delete=models.CASCADE, related_name="chat_messages")
+class ChatMessage(get_subid_model()):
+    """
+    Messages inside a chat.
+    """
+    chat = models.ForeignKey(Chat, on_delete=models.CASCADE, related_name="messages")
     sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
