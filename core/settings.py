@@ -33,6 +33,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['localhost', 'ec84982d1b87.ngrok-free.app']
 # CSRF_TRUSTED_ORIGINS = ["https://localhost", "http://localhost:3008"]
 CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
     "http://localhost:3008",
     "http://127.0.0.1:3008",
 ]
@@ -174,6 +175,7 @@ CHANNEL_LAYERS = {
 CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOWED_ORIGINS = [
+    "http://localhost",
     "http://localhost:3008",
     "http://127.0.0.1:3008",
     "https://ec84982d1b87.ngrok-free.app",

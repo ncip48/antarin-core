@@ -4,6 +4,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 
 from chat.models.chat import Chat
+from authn.rest.auth.serializers import UserSerializer
 
 from .models import ChatMessage
 from django.contrib.auth import get_user_model
@@ -57,25 +58,32 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return  # Ignore empty messages
 
         # Save message
-        await self.save_message(sender_id, self.subid, message)
+        resp_save = await self.save_message(sender_id, self.subid, message)
+        
+        sender = UserSerializer(user).data
 
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 "type": "chat_message",
-                "message": message,
-                "sender": {
-                    "subid": user.subid,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                    "email": user.email,
-                },
-                "created_at": timezone.now().isoformat()
+                "message": resp_save.message,
+                "sender": sender,
+                "created_at": resp_save.created_at.isoformat(),
+                "sender_id": sender_id,  # ✅ include this
             }
         )
 
+    # async def chat_message(self, event):
+    #     await self.send(text_data=json.dumps(event))
+    
     async def chat_message(self, event):
-        await self.send(text_data=json.dumps(event))
+        is_mine = event["sender_id"] == self.scope["user"].id
+        await self.send(text_data=json.dumps({
+            "message": event["message"],
+            "sender": event["sender"],
+            "created_at": event["created_at"],
+            "is_mine": is_mine,
+        }))
         
     # async def typing_indicator(self, event):
     #     await self.send(text_data=json.dumps({
