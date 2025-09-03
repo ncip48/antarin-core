@@ -79,6 +79,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         is_mine = event["sender_id"] == self.scope["user"].id
         await self.send(text_data=json.dumps({
+            "type": "chat_message",
             "message": event["message"],
             "sender": event["sender"],
             "created_at": event["created_at"],
