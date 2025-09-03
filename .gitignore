@@ -62,4 +62,6 @@ pytest_cache/
 .cache/
 
 config/firebase/*
+!config/firebase/.keep
+
 
