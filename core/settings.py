@@ -15,6 +15,8 @@ import os
 from pathlib import Path
 from decouple import config
 import sys
+import firebase_admin
+from firebase_admin import credentials
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -63,6 +65,8 @@ INSTALLED_APPS = [
     'booking',
     
     'chat',
+    
+    'fcm',
 ]
 
 MIDDLEWARE = [
@@ -216,3 +220,9 @@ AUTH_USER_MODEL = 'authn.User'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+cred = credentials.Certificate(os.path.join(BASE_DIR, "config", "firebase", "firebase-adminsdk.json"))
+
+# Initialize only once
+if not firebase_admin._apps:
+    firebase_admin.initialize_app(cred)

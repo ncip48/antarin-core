@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from chat.models import ChatMessage, Chat, ChatParticipant
+from chat.models import ChatMessage, Chat, ChatParticipant, ChatAttachment
 
 # Register your models here.
 @admin.register(Chat)
@@ -23,4 +23,11 @@ class ChatMessageAdmin(admin.ModelAdmin):
     search_fields = ['id', 'name']
     list_filter = ['created_at']
     ordering = ['-created_at']
+    
+@admin.register(ChatAttachment)
+class ChatAttachmentAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in ChatAttachment._meta.fields]
+    search_fields = ['id']
+    list_filter = ['uploaded_at']
+    ordering = ['-uploaded_at']
 

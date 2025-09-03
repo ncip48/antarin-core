@@ -17,3 +17,4 @@ networkx
 geopandas
 scikit-learn
 Pillow
+firebase-admin
