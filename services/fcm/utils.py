@@ -9,10 +9,7 @@ def send_fcm_notification(token, title, body, data=None, force_popup=False):
 
     custom_data = data or {}
 
-    if force_popup:
-        # You can enforce popup behavior by adding a special flag to payload.
-        # On client side, handle this and display a forced popup.
-        custom_data["force_popup"] = "true"
+    custom_data["force_popup"] = "true" if force_popup else "false"
 
     message = messaging.Message(
         notification=messaging.Notification(
@@ -34,6 +31,7 @@ def notify_users(users, title, body, data=None, force_popup=False):
     
     print(devices)
     print(len(devices))
+    print(force_popup)
 
     for device in devices:
         try:

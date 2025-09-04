@@ -75,13 +75,11 @@ class NotificationViewSet(viewsets.ModelViewSet):
                 )
 
             NotificationRecipient.objects.bulk_create(recipients)
-
-            # Todo: Force Popup please
-            if force_popup:
-                if notif_type == "all":
-                    notify_users(User.objects.all(), title, body, data=data, force_popup=True)
-                elif notif_type == "users":
-                    notify_users(target_users, title, body, data=data, force_popup=True)
+ 
+            if notif_type == "all":
+                notify_users(User.objects.all(), title, body, data=data, force_popup=force_popup)
+            elif notif_type == "users":
+                notify_users(target_users, title, body, data=data, force_popup=force_popup)
 
         serializer = self.get_serializer(notification)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -98,3 +96,41 @@ class NotificationViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(notifications, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=["post"], url_path="resend")
+    def resend_notification(self, request, pk=None):
+        """
+        Resend a notification if it was created with force_popup=True.
+        POST /api/notifications/{subid}/resend/
+        """
+        try:
+            notification = self.get_queryset().get(subid=pk)
+        except Notification.DoesNotExist:
+            return Response(
+                {"detail": "Notification not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # find recipients
+        recipients = NotificationRecipient.objects.filter(notification=notification)
+        users = [r.user for r in recipients]
+
+        if not users:
+            return Response(
+                {"detail": "No recipients found for this notification."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # re-send push notification
+        notify_users(
+            users,
+            notification.title,
+            notification.body,
+            data=notification.data,
+            force_popup=notification.force_popup,
+        )
+
+        return Response(
+            {"detail": f"Notification {notification.id} resent to {len(users)} recipients."},
+            status=status.HTTP_200_OK,
+        )
