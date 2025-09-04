@@ -10,7 +10,6 @@ broadcasting, and database interactions asynchronously.
 import json
 # +++ ADD THESE IMPORTS FOR FILE HANDLING +++
 import base64
-import uuid
 from django.core.files.base import ContentFile
 # ---
 from channels.generic.websocket import AsyncWebsocketConsumer

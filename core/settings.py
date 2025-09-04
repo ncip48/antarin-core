@@ -67,6 +67,8 @@ INSTALLED_APPS = [
     'chat',
     
     'fcm',
+    
+    'notification',
 ]
 
 MIDDLEWARE = [

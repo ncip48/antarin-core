@@ -26,6 +26,7 @@ urlpatterns = [
     path("api/", include("services.booking.rest.urls")), 
     path("api/", include("services.chat.rest.urls")), 
     path("api/", include("services.fcm.rest.urls")), 
+    path("api/", include("services.notification.rest.urls")), 
 ]
 
 
